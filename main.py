@@ -8,45 +8,105 @@ from PyQt5.QtGui import QPixmap
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QCursor
 
+widgets = {
+    "logo": [],
+    "button": [],
+    "add_order_button": [],
+    "run_algorithm_button": [],
+    "show_timetable_button": [],
+}
+
 # init, sys.argv -- command arguments
 app = QApplication(sys.argv)
 window = QWidget()
 window.setWindowTitle("Pimp My Ride")
 window.setFixedWidth(1200)
-window.setFixedHeight(800)
+window.setFixedHeight(900)
 window.setStyleSheet("background: 'black';")
 
 # grid layout
 grid = QGridLayout()
-grid.setContentsMargins(0, 0, 0, 200)
 
 
-def frame():
+def set_content_margins(left_margin, top_margin, right_margin, bottom_margin):
+    grid.setContentsMargins(left_margin, top_margin, right_margin, bottom_margin)
+
+
+def display_logo():
     # display logo
     image = QPixmap("logo.png")
     logo = QLabel()     # creating label widget
     logo.setPixmap(image)
     logo.setAlignment(QtCore.Qt.AlignHCenter)
     logo.setStyleSheet("margin-top: 100px;")
+    widgets["logo"].append(logo)
+    return logo
 
-    # button widget
-    button = QPushButton("Dalej")
+
+def clear_widgets():
+    for widget in widgets:
+        if widgets[widget] != []:  # if not empty -> hide widget
+            widgets[widget][-1].hide()
+        for i in range(0, len(widgets[widget])):
+            widgets[widget].pop()  # remove widgets from global dictionary
+
+
+def next_on_click():
+    clear_widgets()
+    menu_frame()
+
+
+def create_button(name):
+    button = QPushButton(name)
     button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
     button.setStyleSheet(
-        "*{border: 4px solid '#FBE405';" +
+        "*{border: 4px solid '#16B3D3';" +
         "border-radius: 45px;" +
         "font-size: 35px;" +
+        "font-weight: bold;" +
+        "color: 'black';" +
+        "padding: 25px 0;" +
+        "background: #FBE405;}" +
+        "*:hover{background: '#16B3D3';" +
         "color: 'white';" +
-        "padding: 25px 0;}" +
-        "*:hover{background: '#16B3D3';}"
+        "border: 4px solid '#FBE405';}"
     )
-
-    grid.addWidget(logo, 0, 0, 0, 3)  # (row, column, row_span, column_span)
-    grid.addWidget(button, 1, 1, 1, 1)
+    return button
 
 
-frame()
+def init_frame():
+    set_content_margins(0, 0, 0, 300)
+    logo = display_logo()
 
+    # button widget
+    button = create_button("Dalej")
+    widgets["button"].append(button)
+
+    grid.addWidget(widgets["logo"][-1], 0, 0, 0, 3)  # (row, column, row_span, column_span)
+    grid.addWidget(widgets["button"][-1], 1, 1, 1, 1)  # -1 is index
+
+    button.clicked.connect(next_on_click)
+
+
+def menu_frame():
+    set_content_margins(0, 0, 0, 100)
+    logo = display_logo()
+    grid.addWidget(widgets["logo"][-1], 0, 0, 0, 3)  # (row, column, row_span, column_span)
+
+    add_order_button = create_button("Dodaj zamówienie")
+    run_algorithm_button = create_button("Uruchom algorytm")
+    show_timetable_button = create_button("Pokaż harmonogram")
+
+    widgets["add_order_button"].append(add_order_button)
+    widgets["run_algorithm_button"].append(run_algorithm_button)
+    widgets["show_timetable_button"].append(show_timetable_button)
+
+    grid.addWidget(widgets["add_order_button"][-1], 1, 1, 1, 1)  # -1 is index
+    grid.addWidget(widgets["run_algorithm_button"][-1], 2, 1, 1, 1)
+    grid.addWidget(widgets["show_timetable_button"][-1], 3, 1, 1, 1)
+
+
+init_frame()
 # applying this grid on layout
 window.setLayout(grid)
 
