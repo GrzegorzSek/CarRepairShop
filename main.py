@@ -10,7 +10,7 @@ from PyQt5.QtGui import QCursor
 
 widgets = {
     "logo": [],
-    "button": [],
+    "next_button": [],
     "add_order_button": [],
     "run_algorithm_button": [],
     "show_timetable_button": [],
@@ -79,13 +79,13 @@ def init_frame():
     logo = display_logo()
 
     # button widget
-    button = create_button("Dalej")
-    widgets["button"].append(button)
+    next_button = create_button("Dalej")
+    widgets["next_button"].append(next_button)
 
-    grid.addWidget(widgets["logo"][-1], 0, 0, 0, 3)  # (row, column, row_span, column_span)
-    grid.addWidget(widgets["button"][-1], 1, 1, 1, 1)  # -1 is index
+    grid.addWidget(widgets["logo"][-1], 0, 0, 1, 3)  # (row, column, row_span, column_span)
+    grid.addWidget(widgets["next_button"][-1], 1, 1, 1, 1)  # -1 is index
 
-    button.clicked.connect(next_on_click)
+    next_button.clicked.connect(next_on_click)
 
 
 def menu_frame():
@@ -101,7 +101,7 @@ def menu_frame():
     widgets["run_algorithm_button"].append(run_algorithm_button)
     widgets["show_timetable_button"].append(show_timetable_button)
 
-    grid.addWidget(widgets["add_order_button"][-1], 1, 1, 1, 1)  # -1 is index
+    grid.addWidget(widgets["add_order_button"][-1], 1, 1, 1, 1)
     grid.addWidget(widgets["run_algorithm_button"][-1], 2, 1, 1, 1)
     grid.addWidget(widgets["show_timetable_button"][-1], 3, 1, 1, 1)
 
