@@ -5,8 +5,9 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout
 from PyQt5.QtGui import QPixmap
-from PyQt5 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QTableWidgetItem
 
 widgets = {
     "logo": [],
@@ -14,6 +15,7 @@ widgets = {
     "add_order_button": [],
     "run_algorithm_button": [],
     "show_timetable_button": [],
+    "timetable_widget": [],
 }
 
 # init, sys.argv -- command arguments
@@ -22,7 +24,7 @@ window = QWidget()
 window.setWindowTitle("Pimp My Ride")
 window.setFixedWidth(1200)
 window.setFixedHeight(900)
-window.setStyleSheet("background: 'black';")
+window.setStyleSheet("background: #858585;")
 
 # grid layout
 grid = QGridLayout()
@@ -54,6 +56,11 @@ def clear_widgets():
 def next_on_click():
     clear_widgets()
     menu_frame()
+
+
+def show_timetable_button_on_click():
+    clear_widgets()
+    timetable_frame()
 
 
 def create_button(name):
@@ -91,6 +98,7 @@ def init_frame():
 def menu_frame():
     set_content_margins(0, 0, 0, 100)
     logo = display_logo()
+
     grid.addWidget(widgets["logo"][-1], 0, 0, 0, 3)  # (row, column, row_span, column_span)
 
     add_order_button = create_button("Dodaj zamówienie")
@@ -104,6 +112,23 @@ def menu_frame():
     grid.addWidget(widgets["add_order_button"][-1], 1, 1, 1, 1)
     grid.addWidget(widgets["run_algorithm_button"][-1], 2, 1, 1, 1)
     grid.addWidget(widgets["show_timetable_button"][-1], 3, 1, 1, 1)
+
+    show_timetable_button.clicked.connect(show_timetable_button_on_click)
+
+
+def timetable_frame():
+    timetable_widget = QtWidgets.QTableWidget()
+
+    # timetable_widget.setGeometry(QtCore.QRect(100, 100, 660, 660))  # (x, y, width, height )
+    timetable_widget.setColumnCount(2)
+    timetable_widget.setRowCount(2)
+    timetable_widget.setHorizontalHeaderLabels(["ID zamówienia", "Kwota"])
+    timetable_widget.setItem(0, 0, QTableWidgetItem("Name"))
+    timetable_widget.setItem(0, 1, QTableWidgetItem("2222"))
+
+    widgets["timetable_widget"].append(timetable_widget)
+    grid.addWidget(widgets["timetable_widget"][-1], 1, 1, 1, 3)
+    set_content_margins(0, 100, 0, 0)
 
 
 init_frame()
