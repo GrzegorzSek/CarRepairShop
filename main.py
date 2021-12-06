@@ -16,6 +16,9 @@ widgets = {
     "run_algorithm_button": [],
     "show_timetable_button": [],
     "timetable_widget": [],
+    "label1": [],
+    "label2": [],
+    "timetable_widget2": [],
 }
 
 # init, sys.argv -- command arguments
@@ -117,18 +120,40 @@ def menu_frame():
 
 
 def timetable_frame():
+    label1 = QLabel()
+    label1.setText("Stanowisko 1")
+    widgets["label1"].append(label1)
+    grid.addWidget(widgets["label1"][-1], 1, 1, 1, 3)
+
     timetable_widget = QtWidgets.QTableWidget()
 
     # timetable_widget.setGeometry(QtCore.QRect(100, 100, 660, 660))  # (x, y, width, height )
-    timetable_widget.setColumnCount(2)
-    timetable_widget.setRowCount(2)
-    timetable_widget.setHorizontalHeaderLabels(["ID zamówienia", "Kwota"])
+    timetable_widget.setColumnCount(5)
+    timetable_widget.setRowCount(8)
+    timetable_widget.setHorizontalHeaderLabels(["Dzień 1", "Dzień 2", "Dzień 3", "Dzień 4", "Dzień 5"])
     timetable_widget.setItem(0, 0, QTableWidgetItem("Name"))
     timetable_widget.setItem(0, 1, QTableWidgetItem("2222"))
 
     widgets["timetable_widget"].append(timetable_widget)
-    grid.addWidget(widgets["timetable_widget"][-1], 1, 1, 1, 3)
-    set_content_margins(0, 100, 0, 0)
+    grid.addWidget(widgets["timetable_widget"][-1], 2, 1, 1, 3)
+    set_content_margins(0, 50, 0, 0)
+
+    label2 = QLabel()
+    label2.setText("Stanowisko 2")
+    widgets["label2"].append(label2)
+    grid.addWidget(widgets["label2"][-1], 3, 1, 1, 3)
+
+    timetable_widget2 = QtWidgets.QTableWidget()
+
+    # timetable_widget.setGeometry(QtCore.QRect(100, 100, 660, 660))  # (x, y, width, height )
+    timetable_widget2.setColumnCount(5)
+    timetable_widget2.setRowCount(8)
+    timetable_widget2.setHorizontalHeaderLabels(["Dzień 1", "Dzień 2", "Dzień 3", "Dzień 4", "Dzień 5"])
+    timetable_widget2.setItem(0, 0, QTableWidgetItem("Name"))
+    timetable_widget2.setItem(0, 1, QTableWidgetItem("2222"))
+
+    widgets["timetable_widget2"].append(timetable_widget2)
+    grid.addWidget(widgets["timetable_widget2"][-1], 4, 1, 1, 3)
 
 
 init_frame()
