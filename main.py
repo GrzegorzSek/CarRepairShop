@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QCursor
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QTableWidgetItem
 
 widgets = {
@@ -42,7 +44,7 @@ window = QWidget()
 window.setWindowTitle("Pimp My Ride")
 window.setFixedWidth(1200)
 window.setFixedHeight(900)
-window.setStyleSheet("background: #858585;")
+window.setStyleSheet("background: 'black';")
 
 # grid layout
 grid = QGridLayout()
@@ -116,7 +118,7 @@ def add_order_to_database_on_click(s_1, s_2, s_3, s_4, s_5, s_6, s_7, s_8, combo
         queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '7')")
     if s_8:
         queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '8')")
-    
+
     for query in queries:
         db.execute_query(query)
 
@@ -137,6 +139,15 @@ def create_button(name):
         "border: 4px solid '#FBE405';}"
     )
     return button
+
+
+def create_checkbox(name):
+    checkbox = QCheckBox(name)
+    checkbox.setStyleSheet("QCheckBox::indicator:unchecked {image: url(checkbox_1.png);}" +
+                           "QCheckBox::indicator:unchecked:hover {image: url(hover_1.png);}" +
+                           "QCheckBox::indicator:checked {image: url(checked_1.png);}" +
+                           "*{font-size: 20px; font-weight: bold; color: 'white';}")
+    return checkbox
 
 
 def init_frame():
@@ -215,31 +226,33 @@ def timetable_frame():
 
 
 def add_order_frame():
-    set_content_margins(0, 0, 100, 300)
+    set_content_margins(0, 0, 100, 100)
 
     add_order_label = QLabel()
     add_order_label.setText("Dodaj zamówienie:")
     widgets["add_order_label"].append(add_order_label)
     add_order_label.setStyleSheet("font-size: 35px; font-weight: bold;")
     grid.addWidget(widgets["add_order_label"][-1], 0, 1, 1, 1)  # (row, column, row_span, column_span)
+    add_order_label.setStyleSheet("font-size: 35px; font-weight: bold; color: 'white';")
 
     display_logo("small_logo")
     grid.addWidget(widgets["logo"][-1], 0, 3, 1, 1)  # (row, column, row_span, column_span)
 
     registration_number_combo = QComboBox()
+    registration_number_combo.setStyleSheet("font-size: 20px; font-weight: bold; color: 'black'; background: 'white'")
     registration_number_combo.addItems(["DSA2432", "FSD2318", "SI3M4", "TU432", "RWH313", "ERA212"])
     widgets["registration_number_combo"].append(registration_number_combo)
     grid.addWidget(widgets["registration_number_combo"][-1], 1, 1, 1, 1)
     # print(str(registration_number_combo.currentText()))
 
-    service_1 = QCheckBox("usluga_1")
-    service_2 = QCheckBox("usluga_2")
-    service_3 = QCheckBox("usluga_3")
-    service_4 = QCheckBox("usluga_4")
-    service_5 = QCheckBox("usluga_5")
-    service_6 = QCheckBox("usluga_6")
-    service_7 = QCheckBox("usluga_7")
-    service_8 = QCheckBox("usluga_8")
+    service_1 = create_checkbox("usluga_1")
+    service_2 = create_checkbox("usluga_2")
+    service_3 = create_checkbox("usluga_3")
+    service_4 = create_checkbox("usluga_4")
+    service_5 = create_checkbox("usluga_5")
+    service_6 = create_checkbox("usluga_6")
+    service_7 = create_checkbox("usluga_7")
+    service_8 = create_checkbox("usluga_8")
 
     widgets["service_1"].append(service_1)
     widgets["service_2"].append(service_2)
@@ -261,7 +274,7 @@ def add_order_frame():
 
     add_order_to_database = create_button("Dodaj zamówienie")
     widgets["add_order_to_database"].append(add_order_to_database)
-    grid.addWidget(widgets["add_order_to_database"][-1], 10, 1, 1, 1)
+    grid.addWidget(widgets["add_order_to_database"][-1], 12, 3, 1, 1)
 
     add_order_to_database.clicked.connect(lambda: add_order_to_database_on_click(
         service_1.isChecked(), service_2.isChecked(), service_3.isChecked(), service_4.isChecked(),
