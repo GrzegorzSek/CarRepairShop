@@ -227,7 +227,7 @@ def add_order_frame():
     grid.addWidget(widgets["logo"][-1], 0, 3, 1, 1)  # (row, column, row_span, column_span)
 
     registration_number_combo = QComboBox()
-    registration_number_combo.addItems(["DZA38FJ", "DWR3215", "DW32154", "DZA1243"])
+    registration_number_combo.addItems(["DSA2432", "FSD2318", "SI3M4", "TU432", "RWH313", "ERA212"])
     widgets["registration_number_combo"].append(registration_number_combo)
     grid.addWidget(widgets["registration_number_combo"][-1], 1, 1, 1, 1)
     # print(str(registration_number_combo.currentText()))
