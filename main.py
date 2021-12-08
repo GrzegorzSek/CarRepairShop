@@ -34,6 +34,8 @@ widgets = {
     "add_order_to_database": [],
 }
 
+services_names = []
+
 # init, sys.argv -- command arguments
 app = QApplication(sys.argv)
 window = QWidget()
@@ -82,6 +84,41 @@ def show_timetable_button_on_click():
 def add_order_button_button_on_click():
     clear_widgets()
     add_order_frame()
+
+
+def add_order_to_database_on_click(s_1, s_2, s_3, s_4, s_5, s_6, s_7, s_8, combo_value):
+    # checking car_id depending on registration number (combobox)
+    sql_query = f"SELECT * FROM samochod WHERE nr_rejestracyjny = '{combo_value}'"
+    car_id = db.db_data_to_list(sql_query)[0][0]
+
+    # adding order to database
+    if s_1 or s_2 or s_3 or s_4 or s_5 or s_6 or s_7 or s_8:
+        print("22")
+        query = f"INSERT INTO zamowienie(samochod_id) VALUES ('{car_id}')"
+        db.execute_query(query)
+
+    # adding services to order depending on checked checkboxes
+    queries = []
+    order_id = db.cur.lastrowid  # returns last added row id
+    if s_1:
+        queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '1')")
+    if s_2:
+        queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '2')")
+    if s_3:
+        queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '3')")
+    if s_4:
+        queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '4')")
+    if s_5:
+        queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '5')")
+    if s_6:
+        queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '6')")
+    if s_7:
+        queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '7')")
+    if s_8:
+        queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '8')")
+    
+    for query in queries:
+        db.execute_query(query)
 
 
 def create_button(name):
@@ -190,9 +227,10 @@ def add_order_frame():
     grid.addWidget(widgets["logo"][-1], 0, 3, 1, 1)  # (row, column, row_span, column_span)
 
     registration_number_combo = QComboBox()
-    registration_number_combo.addItems(["DW65152", "DW66666"])
+    registration_number_combo.addItems(["DZA38FJ", "DWR3215", "DW32154", "DZA1243"])
     widgets["registration_number_combo"].append(registration_number_combo)
     grid.addWidget(widgets["registration_number_combo"][-1], 1, 1, 1, 1)
+    # print(str(registration_number_combo.currentText()))
 
     service_1 = QCheckBox("usluga_1")
     service_2 = QCheckBox("usluga_2")
@@ -220,6 +258,16 @@ def add_order_frame():
     grid.addWidget(widgets["service_6"][-1], 7, 1, 1, 1)
     grid.addWidget(widgets["service_7"][-1], 8, 1, 1, 1)
     grid.addWidget(widgets["service_8"][-1], 9, 1, 1, 1)
+
+    add_order_to_database = create_button("Dodaj zamówienie")
+    widgets["add_order_to_database"].append(add_order_to_database)
+    grid.addWidget(widgets["add_order_to_database"][-1], 10, 1, 1, 1)
+
+    add_order_to_database.clicked.connect(lambda: add_order_to_database_on_click(
+        service_1.isChecked(), service_2.isChecked(), service_3.isChecked(), service_4.isChecked(),
+        service_5.isChecked(), service_6.isChecked(), service_7.isChecked(), service_8.isChecked(),
+        str(registration_number_combo.currentText())
+    ))
 
 
 init_frame()
