@@ -235,6 +235,8 @@ def menu_frame():
 
 
 def timetable_frame():
+    set_content_margins(0, 0, 100, 100)
+
     position_1_label = QLabel()
     position_1_label.setText("Stanowisko 1")
     widgets["position_1_label"].append(position_1_label)
@@ -252,7 +254,6 @@ def timetable_frame():
 
     widgets["timetable_widget_1"].append(timetable_widget_1)
     grid.addWidget(widgets["timetable_widget_1"][-1], 2, 1, 1, 3)
-    set_content_margins(0, 50, 0, 0)
 
     position_2_label = QLabel()
     position_2_label.setText("Stanowisko 2")
