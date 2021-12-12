@@ -1,46 +1,29 @@
-# importing libraries
-from PyQt5.QtWidgets import *
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-import sys
+
+# def swap(my_list2):
+#     temp = my_list2[0]
+#     my_list2[0] = my_list2[1]
+#     my_list2[1] = temp
+#     return my_list2
+#
+#
+# my_list = [[1, 1, 1], [2, 2, 2]]
+#
+# swap(my_list)
+# print(my_list)
+#
+priorities = [5, 4, 3, 2, 1]
 
 
-class Window(QMainWindow):
-
-    def __init__(self):
-        super().__init__()
-
-        # setting title
-        self.setWindowTitle("Python ")
-
-        # setting geometry
-        self.setGeometry(100, 100, 600, 400)
-
-        # calling method
-        self.UiComponents()
-
-        # showing all the widgets
-        self.show()
-
-    # method for widgets
-    def UiComponents(self):
-        # creating the check-box
-        checkbox = QCheckBox('Geek ?', self)
-
-        # setting geometry of check box
-        checkbox.setGeometry(200, 150, 100, 80)
-
-        # setting stylesheet
-        # changing width and height of indicator
-        checkbox.resize(100, 100)
+def swap(idx_1, idx_2, priorities):
+    priorities[idx_1], priorities[idx_2] = priorities[idx_2], priorities[idx_1]
 
 
-# create pyqt5 app
-App = QApplication(sys.argv)
+for j in range(0, len(priorities) - 1):
+    for i in range(0, len(priorities) - 1):
+        if priorities[i] > priorities[i + 1]:
+            swap(i, i + 1, priorities)
 
-# create the instance of our Window
-window = Window()
+print(priorities)
 
-# start the app
-sys.exit(App.exec())
+for i in range(0, len(priorities)):
+    print(i)

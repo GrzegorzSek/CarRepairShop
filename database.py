@@ -48,3 +48,7 @@ db = Database()
 # query_2 = f"SELECT * FROM samochod WHERE samochod_id = '{ans[0][0]}'"
 # ans2 = db.db_data_to_list(query_2)
 # print(ans2)
+
+# query = "SELECT usluga_id, nr_w_kolejce FROM zawartosc_zamowienia WHERE zamowienie_id = '5'"
+# result = db.db_data_to_list(query)
+# print(result[0][0])

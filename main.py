@@ -67,7 +67,7 @@ def display_logo(image_name):
 
 def clear_widgets():
     for widget in widgets:
-        if widgets[widget] != []:  # if not empty -> hide widget
+        if widgets[widget]:  # if not empty -> hide widget
             widgets[widget][-1].hide()
         for i in range(0, len(widgets[widget])):
             widgets[widget].pop()  # remove widgets from global dictionary
@@ -88,20 +88,66 @@ def add_order_button_button_on_click():
     add_order_frame()
 
 
+def sum_duration_of_the_service(services, order_id):
+    sum_time = 0
+    for service in range(0, len(services)):
+        sql_query = f"SELECT czas_trwania FROM usluga WHERE usluga_id = '{services[service][0]}'"
+        time = db.db_data_to_list(sql_query)
+        sum_time = sum_time + time[0][0]
+
+    sql_query = f"UPDATE zamowienie SET czas_razem = '{sum_time}' WHERE zamowienie_id = '{order_id}'"
+    db.execute_query(sql_query)
+
+
+def swap(services, idx_1, idx_2, priorities):
+    services[idx_1], services[idx_2] = services[idx_2], services[idx_1]
+    priorities[idx_1], priorities[idx_2] = priorities[idx_2], priorities[idx_1]
+
+
+def sort_services(order_id):
+    sql_query = f"SELECT usluga_id FROM zawartosc_zamowienia WHERE zamowienie_id = '{order_id}'"
+    services = db.db_data_to_list(sql_query)
+    priorities = []
+
+    # getting service priority
+    for service in range(0, len(services)):
+        sql_query = f"SELECT priorytet FROM usluga WHERE usluga_id = '{services[service][0]}'"
+        priority = db.db_data_to_list(sql_query)
+        priorities.append(priority)
+
+    # bubble-sort
+    for j in range(0, len(priorities) - 1):
+        for i in range(0, len(priorities) - 1):
+            if priorities[i] > priorities[i + 1]:
+                swap(services, i, i + 1, priorities)
+
+    # save data to database
+    i = 1
+    for service in range(0, len(services)):
+        sql_query = f"""UPDATE zawartosc_zamowienia SET nr_w_kolejce = '{i}' 
+        WHERE usluga_id = '{services[service][0]}' AND zamowienie_id = '{order_id}'"""
+        db.execute_query(sql_query)
+        i = i + 1
+
+    sum_duration_of_the_service(services, order_id)
+
+
 def add_order_to_database_on_click(s_1, s_2, s_3, s_4, s_5, s_6, s_7, s_8, combo_value):
     # checking car_id depending on registration number (combobox)
     sql_query = f"SELECT * FROM samochod WHERE nr_rejestracyjny = '{combo_value}'"
     car_id = db.db_data_to_list(sql_query)[0][0]
+    print("car_id: " + str(car_id))
 
     # adding order to database
     if s_1 or s_2 or s_3 or s_4 or s_5 or s_6 or s_7 or s_8:
-        print("22")
         query = f"INSERT INTO zamowienie(samochod_id) VALUES ('{car_id}')"
         db.execute_query(query)
+        print("dodaję zamówienie dla samochodu: " + str(car_id))
 
-    # adding services to order depending on checked checkboxes
+    # # adding services to order depending on checked checkboxes
     queries = []
     order_id = db.cur.lastrowid  # returns last added row id
+    print(order_id)
     if s_1:
         queries.append(f"INSERT INTO zawartosc_zamowienia(zamowienie_id, usluga_id) VALUES ('{order_id}', '1')")
     if s_2:
@@ -121,6 +167,8 @@ def add_order_to_database_on_click(s_1, s_2, s_3, s_4, s_5, s_6, s_7, s_8, combo
 
     for query in queries:
         db.execute_query(query)
+
+    sort_services(order_id)
 
 
 def create_button(name):
