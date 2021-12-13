@@ -28,27 +28,9 @@ class Database:
 
 db = Database()
 # ----------------------------------------------QUERIES TEST SECTION
-# query = "SELECT * FROM zamowienie"
-# db.execute_query(query)
-# db.print_query()
-# ans = db.db_to_list(query)
-# print(ans[0][1])
-
-# query = "INSERT INTO zamowienie(samochod_id) VALUES ('2')"
-# db.execute_query(query)
-# print(db.cur.lastrowid)
-# query2 = "SELECT * FROM zamowienie"
-# db.execute_query(query2)
-# db.print_query()
-
-# PRZYKLAD POBRANIA DANYCH W ZALEZNOSCI OD ZMIENNEJ
-# query = "SELECT samochod_id FROM samochod WHERE nr_rejestracyjny='DZA38FJ'"
-# ans = db.db_data_to_list(query)[0][0]
-# print(ans)
-# query_2 = f"SELECT * FROM samochod WHERE samochod_id = '{ans[0][0]}'"
-# ans2 = db.db_data_to_list(query_2)
-# print(ans2)
-
-# query = "SELECT usluga_id, nr_w_kolejce FROM zawartosc_zamowienia WHERE zamowienie_id = '5'"
+# SELECT zamowienie_id, czas_razem FROM zamowienie ORDER BY data_mod DESC
+# query = "SELECT zamowienie_id, czas_razem FROM zamowienie ORDER BY data_mod DESC"
 # result = db.db_data_to_list(query)
-# print(result[0][0])
+# print(result)
+# result.pop(1)
+# print(result)
