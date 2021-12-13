@@ -183,7 +183,7 @@ def save_to_database(position_orders, position_number):
     for i in range(0, 5):
         counter = 1
         for j in range(1, len(position_orders[i])):
-            sql_query = f"""UPDATE zamowienie SET data_plan_wyk = '{i+1}', nr_w_kolejce = '{counter}',
+            sql_query = f"""UPDATE zamowienie SET data_plan_wyk = '{i + 1}', nr_w_kolejce = '{counter}',
             nr_stanowiska = '{position_number}' WHERE zamowienie_id = '{position_orders[i][j]}'"""
             db.execute_query(sql_query)
             counter = counter + 1
@@ -285,6 +285,23 @@ def create_checkbox(name):
     return checkbox
 
 
+def set_timetable_cell_value(name, workplace_number):
+    for day in range(0, 5):
+        sql_query = f"""SELECT zamowienie_id, czas_razem FROM zamowienie WHERE nr_stanowiska = '{workplace_number}' 
+        AND data_plan_wyk = '{day + 1}' ORDER BY nr_w_kolejce ASC"""
+        result = db.db_data_to_list(sql_query)
+
+        for i in range(0, len(result)):
+            start = 0
+            repeat_number = result[i][1]
+            if i > 0:
+                start = start + repeat_number + 1
+                repeat_number = repeat_number + result[i][1] + 1
+
+            for r in range(start, repeat_number):
+                name.setItem(r, day, QTableWidgetItem(str(result[i][0])))
+
+
 def init_frame():
     set_content_margins(0, 0, 0, 300)
     display_logo("logo")
@@ -336,13 +353,13 @@ def timetable_frame():
     grid.addWidget(widgets["position_1_label"][-1], 1, 0, 1, 3)
 
     timetable_widget_1 = QtWidgets.QTableWidget()
+    timetable_widget_1.setStyleSheet("color: 'black'; background: 'white'")
 
     # timetable_widget.setGeometry(QtCore.QRect(100, 100, 660, 660))  # (x, y, width, height )
     timetable_widget_1.setColumnCount(5)
     timetable_widget_1.setRowCount(8)
     timetable_widget_1.setHorizontalHeaderLabels(["Dzień 1", "Dzień 2", "Dzień 3", "Dzień 4", "Dzień 5"])
-    timetable_widget_1.setItem(0, 0, QTableWidgetItem("Name"))
-    timetable_widget_1.setItem(0, 1, QTableWidgetItem("2222"))
+    set_timetable_cell_value(timetable_widget_1, 1)
 
     widgets["timetable_widget_1"].append(timetable_widget_1)
     grid.addWidget(widgets["timetable_widget_1"][-1], 2, 0, 1, 3)
@@ -354,13 +371,13 @@ def timetable_frame():
     grid.addWidget(widgets["position_2_label"][-1], 3, 0, 1, 3)
 
     timetable_widget_2 = QtWidgets.QTableWidget()
+    timetable_widget_2.setStyleSheet("color: 'black'; background: 'white'")
 
     # timetable_widget.setGeometry(QtCore.QRect(100, 100, 660, 660))  # (x, y, width, height )
     timetable_widget_2.setColumnCount(5)
     timetable_widget_2.setRowCount(8)
     timetable_widget_2.setHorizontalHeaderLabels(["Dzień 1", "Dzień 2", "Dzień 3", "Dzień 4", "Dzień 5"])
-    timetable_widget_2.setItem(0, 0, QTableWidgetItem("Name"))
-    timetable_widget_2.setItem(0, 1, QTableWidgetItem("2222"))
+    set_timetable_cell_value(timetable_widget_2, 2)
 
     widgets["timetable_widget_2"].append(timetable_widget_2)
     grid.addWidget(widgets["timetable_widget_2"][-1], 4, 0, 1, 3)
