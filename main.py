@@ -25,6 +25,7 @@ widgets = {
     "timetable_widget_2": [],
     "add_order_label": [],
     "registration_number_combo": [],
+    "back_to_menu": [],
     "service_1": [],
     "service_2": [],
     "service_3": [],
@@ -75,6 +76,13 @@ def clear_widgets():
 
 def next_on_click():
     clear_widgets()
+    menu_frame()
+
+
+def back_to_menu_on_click():
+    clear_widgets()
+    window.setLayout(grid)
+    set_content_margins(0, 0, 0, 100)
     menu_frame()
 
 
@@ -273,6 +281,11 @@ def timetable_frame():
     widgets["timetable_widget_2"].append(timetable_widget_2)
     grid.addWidget(widgets["timetable_widget_2"][-1], 4, 1, 1, 3)
 
+    back_to_menu = create_button("Menu")
+    widgets["back_to_menu"].append(back_to_menu)
+    grid.addWidget(widgets["back_to_menu"][-1], 5, 0, 1, 1)
+    back_to_menu.clicked.connect(back_to_menu_on_click)
+
 
 def add_order_frame():
     set_content_margins(0, 0, 100, 100)
@@ -330,6 +343,11 @@ def add_order_frame():
         service_5.isChecked(), service_6.isChecked(), service_7.isChecked(), service_8.isChecked(),
         str(registration_number_combo.currentText())
     ))
+
+    back_to_menu = create_button("Menu")
+    widgets["back_to_menu"].append(back_to_menu)
+    grid.addWidget(widgets["back_to_menu"][-1], 13, 0, 1, 1)
+    back_to_menu.clicked.connect(back_to_menu_on_click)
 
 
 init_frame()
