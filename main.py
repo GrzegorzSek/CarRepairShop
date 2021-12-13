@@ -19,13 +19,13 @@ widgets = {
     "add_order_button": [],
     "run_algorithm_button": [],
     "show_timetable_button": [],
+    "check_order_button": [],
     "timetable_widget_1": [],
     "position_1_label": [],
     "position_2_label": [],
     "timetable_widget_2": [],
     "add_order_label": [],
     "registration_number_combo": [],
-    "back_to_menu": [],
     "service_1": [],
     "service_2": [],
     "service_3": [],
@@ -35,6 +35,7 @@ widgets = {
     "service_7": [],
     "service_8": [],
     "add_order_to_database": [],
+    "back_to_menu": [],
 }
 
 services_names = []
@@ -81,8 +82,6 @@ def next_on_click():
 
 def back_to_menu_on_click():
     clear_widgets()
-    window.setLayout(grid)
-    set_content_margins(0, 0, 0, 100)
     menu_frame()
 
 
@@ -224,32 +223,36 @@ def menu_frame():
     set_content_margins(0, 0, 0, 100)
     display_logo("logo")
 
-    grid.addWidget(widgets["logo"][-1], 0, 0, 0, 3)  # (row, column, row_span, column_span)
+    grid.addWidget(widgets["logo"][-1], 0, 0, 3, 3)  # (row, column, row_span, column_span)
 
     add_order_button = create_button("Dodaj zamówienie")
     run_algorithm_button = create_button("Uruchom algorytm")
     show_timetable_button = create_button("Pokaż harmonogram")
+    check_order_button = create_button("Sprawdź zamówienie")
 
     widgets["add_order_button"].append(add_order_button)
     widgets["run_algorithm_button"].append(run_algorithm_button)
     widgets["show_timetable_button"].append(show_timetable_button)
+    widgets["check_order_button"].append(check_order_button)
 
-    grid.addWidget(widgets["add_order_button"][-1], 1, 1, 1, 1)
-    grid.addWidget(widgets["run_algorithm_button"][-1], 2, 1, 1, 1)
-    grid.addWidget(widgets["show_timetable_button"][-1], 3, 1, 1, 1)
+    grid.addWidget(widgets["add_order_button"][-1], 3, 1, 2, 1)
+    grid.addWidget(widgets["run_algorithm_button"][-1], 5, 1, 2, 1)
+    grid.addWidget(widgets["show_timetable_button"][-1], 7, 1, 2, 1)
+    grid.addWidget(widgets["check_order_button"][-1], 9, 1, 2, 1)
 
     show_timetable_button.clicked.connect(show_timetable_button_on_click)
     add_order_button.clicked.connect(add_order_button_button_on_click)
+    # check_order.clicked.connect(check_order_button_on_click)
 
 
 def timetable_frame():
-    set_content_margins(0, 0, 100, 100)
+    set_content_margins(50, 50, 100, 50)
 
     position_1_label = QLabel()
     position_1_label.setText("Stanowisko 1")
     widgets["position_1_label"].append(position_1_label)
     position_1_label.setStyleSheet("font-size: 35px; font-weight: bold;")
-    grid.addWidget(widgets["position_1_label"][-1], 1, 1, 1, 3)
+    grid.addWidget(widgets["position_1_label"][-1], 1, 0, 1, 3)
 
     timetable_widget_1 = QtWidgets.QTableWidget()
 
@@ -261,13 +264,13 @@ def timetable_frame():
     timetable_widget_1.setItem(0, 1, QTableWidgetItem("2222"))
 
     widgets["timetable_widget_1"].append(timetable_widget_1)
-    grid.addWidget(widgets["timetable_widget_1"][-1], 2, 1, 1, 3)
+    grid.addWidget(widgets["timetable_widget_1"][-1], 2, 0, 1, 3)
 
     position_2_label = QLabel()
     position_2_label.setText("Stanowisko 2")
     widgets["position_2_label"].append(position_2_label)
     position_2_label.setStyleSheet("font-size: 35px; font-weight: bold;")
-    grid.addWidget(widgets["position_2_label"][-1], 3, 1, 1, 3)
+    grid.addWidget(widgets["position_2_label"][-1], 3, 0, 1, 3)
 
     timetable_widget_2 = QtWidgets.QTableWidget()
 
@@ -279,16 +282,16 @@ def timetable_frame():
     timetable_widget_2.setItem(0, 1, QTableWidgetItem("2222"))
 
     widgets["timetable_widget_2"].append(timetable_widget_2)
-    grid.addWidget(widgets["timetable_widget_2"][-1], 4, 1, 1, 3)
+    grid.addWidget(widgets["timetable_widget_2"][-1], 4, 0, 1, 3)
 
     back_to_menu = create_button("Menu")
     widgets["back_to_menu"].append(back_to_menu)
     grid.addWidget(widgets["back_to_menu"][-1], 5, 0, 1, 1)
-    back_to_menu.clicked.connect(back_to_menu_on_click)
+    back_to_menu.clicked.connect(lambda: back_to_menu_on_click())
 
 
 def add_order_frame():
-    set_content_margins(0, 0, 100, 100)
+    set_content_margins(50, 50, 100, 100)
 
     add_order_label = QLabel()
     add_order_label.setText("Dodaj zamówienie:")
@@ -346,8 +349,8 @@ def add_order_frame():
 
     back_to_menu = create_button("Menu")
     widgets["back_to_menu"].append(back_to_menu)
-    grid.addWidget(widgets["back_to_menu"][-1], 13, 0, 1, 1)
-    back_to_menu.clicked.connect(back_to_menu_on_click)
+    grid.addWidget(widgets["back_to_menu"][-1], 12, 0, 1, 1)
+    back_to_menu.clicked.connect(lambda: back_to_menu_on_click())
 
 
 init_frame()
