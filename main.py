@@ -182,7 +182,7 @@ def add_order_to_database_on_click(s_1, s_2, s_3, s_4, s_5, s_6, s_7, s_8, combo
 def save_to_database(position_orders, position_number):
     for i in range(0, 5):
         counter = 1
-        for j in range(0, len(position_orders[i])):
+        for j in range(1, len(position_orders[i])):
             sql_query = f"""UPDATE zamowienie SET data_plan_wyk = '{i+1}', nr_w_kolejce = '{counter}',
             nr_stanowiska = '{position_number}' WHERE zamowienie_id = '{position_orders[i][j]}'"""
             db.execute_query(sql_query)
@@ -207,40 +207,47 @@ def run_algorithm_button_on_click():
     position_1 = [[1], [2], [3], [4], [5]]
     position_2 = [[1], [2], [3], [4], [5]]
 
-    query = "SELECT zamowienie_id, czas_razem FROM zamowienie ORDER BY data_mod DESC"
+    query = "SELECT zamowienie_id, czas_razem FROM zamowienie ORDER BY data_mod ASC"
     orders = db.db_data_to_list(query)
 
     # iteration over available 5 days
     for i in range(0, 5):
-        pos_1_hours = [8, False]  # pos, no_solution (True if no solution)
+        pos_1_hours = [8, False]  # position, no_solution (True if no solution)
         pos_2_hours = [8, False]
 
-        while (pos_1_hours[0] > 0 and pos_2_hours[0] > 0) or (pos_1_hours[1] is True and pos_2_hours[0] > 0) or \
-                (pos_1_hours[0] > 0 and pos_2_hours[1] is True) or (pos_1_hours[1] is True and pos_2_hours[1] is True): # tu zmienić warunek
+        while pos_1_hours[1] is False or pos_2_hours[1] is False:  # tu zmienić warunek
             if orders:
-                if pos_1_hours[0] != 0 and pos_2_hours[0] != 0:
+                if pos_1_hours[1] is False and pos_2_hours[1] is False:
                     rand_num = random.randint(0, 9)
                     if rand_num % 2 != 0:
                         if pos_1_hours[1] is False:
                             # add order to position 1 on day {i}
                             pos_1_hours = add_order_to_pos(i, position_1, pos_1_hours, orders)
+                            if pos_1_hours[0] == 0:
+                                pos_1_hours = [0, True]
                         else:
                             continue
                     else:
                         if pos_2_hours[1] is False:
                             # add order to position 2 on day {i}
                             pos_2_hours = add_order_to_pos(i, position_2, pos_2_hours, orders)
+                            if pos_2_hours[0] == 0:
+                                pos_2_hours = [0, True]
                         else:
                             continue
-                elif pos_2_hours[0] == 0:
+                elif pos_2_hours[1] is True:
                     if pos_1_hours[1] is False:
                         pos_1_hours = add_order_to_pos(i, position_1, pos_1_hours, orders)
+                        if pos_1_hours[0] == 0:
+                            pos_1_hours = [0, True]
                         # add order to position 1 on day {i}
                     else:
                         continue
                 else:
                     if pos_2_hours[1] is False:
                         pos_2_hours = add_order_to_pos(i, position_2, pos_2_hours, orders)
+                        if pos_2_hours[0] == 0:
+                            pos_2_hours = [0, True]
                         # add order to position 2 on day {i}
                     else:
                         continue
