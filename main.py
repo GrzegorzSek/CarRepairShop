@@ -6,7 +6,7 @@ import random
 from database import *
 import sys
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QCheckBox
-from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QComboBox, QLineEdit
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QCursor
@@ -16,16 +16,20 @@ from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtWidgets import QMessageBox
 
 widgets = {
+    # init frame
     "logo": [],
     "next_button": [],
+    # menu frame
     "add_order_button": [],
     "run_algorithm_button": [],
     "show_timetable_button": [],
     "check_order_button": [],
+    # schedule frame
     "timetable_widget_1": [],
     "position_1_label": [],
     "position_2_label": [],
     "timetable_widget_2": [],
+    # add order frame
     "add_order_label": [],
     "registration_number_combo": [],
     "service_1": [],
@@ -37,7 +41,12 @@ widgets = {
     "service_7": [],
     "service_8": [],
     "add_order_to_database": [],
+    # add order, schedule, check order
     "back_to_menu": [],
+    # check order frame
+    "find_order_textbox": [],
+    "find_order_button": [],
+    # "order_content_table": [],
 }
 
 services_names = []
@@ -104,6 +113,11 @@ def show_timetable_button_on_click():
 def add_order_button_button_on_click():
     clear_widgets()
     add_order_frame()
+
+
+def check_order_button_on_click():
+    clear_widgets()
+    check_order_content_frame()
 
 
 def sum_duration_of_the_service(services, order_id):
@@ -351,38 +365,38 @@ def menu_frame():
     show_timetable_button.clicked.connect(show_timetable_button_on_click)
     add_order_button.clicked.connect(add_order_button_button_on_click)
     run_algorithm_button.clicked.connect(run_algorithm_button_on_click)
-    # check_order.clicked.connect(check_order_button_on_click)
+    check_order_button.clicked.connect(check_order_button_on_click)
 
 
 def timetable_frame():
-    set_content_margins(50, 50, 100, 50)
+    set_content_margins(50, 25, 50, 10)
 
     position_1_label = QLabel()
     position_1_label.setText("Stanowisko 1")
     widgets["position_1_label"].append(position_1_label)
-    position_1_label.setStyleSheet("font-size: 35px; font-weight: bold;")
-    grid.addWidget(widgets["position_1_label"][-1], 1, 0, 1, 3)
+    position_1_label.setStyleSheet("font-size: 40px; font-weight: bold; color: 'white';")
+    grid.addWidget(widgets["position_1_label"][-1], 1, 0, 1, 1)
 
     timetable_widget_1 = QtWidgets.QTableWidget()
-    timetable_widget_1.setStyleSheet("color: 'black'; background: 'white'")
+    timetable_widget_1.setStyleSheet("color: 'black'; background: 'white';")
 
-    # timetable_widget.setGeometry(QtCore.QRect(100, 100, 660, 660))  # (x, y, width, height )
+    # timetable_widget.setGeometry(QtCore.QRect(100, 100, 660, 660))  # (x, y, width, height ) nie dziala
     timetable_widget_1.setColumnCount(5)
     timetable_widget_1.setRowCount(8)
     timetable_widget_1.setHorizontalHeaderLabels(["Dzień 1", "Dzień 2", "Dzień 3", "Dzień 4", "Dzień 5"])
     set_timetable_cell_value(timetable_widget_1, 1)
 
     widgets["timetable_widget_1"].append(timetable_widget_1)
-    grid.addWidget(widgets["timetable_widget_1"][-1], 2, 0, 1, 3)
+    grid.addWidget(widgets["timetable_widget_1"][-1], 1, 1, 1, 3)
 
     position_2_label = QLabel()
     position_2_label.setText("Stanowisko 2")
     widgets["position_2_label"].append(position_2_label)
-    position_2_label.setStyleSheet("font-size: 35px; font-weight: bold;")
-    grid.addWidget(widgets["position_2_label"][-1], 3, 0, 1, 3)
+    position_2_label.setStyleSheet("font-size: 40px; font-weight: bold; color: 'white';")
+    grid.addWidget(widgets["position_2_label"][-1], 2, 0, 1, 1)
 
     timetable_widget_2 = QtWidgets.QTableWidget()
-    timetable_widget_2.setStyleSheet("color: 'black'; background: 'white'")
+    timetable_widget_2.setStyleSheet("color: 'black'; background: 'white';")
 
     # timetable_widget.setGeometry(QtCore.QRect(100, 100, 660, 660))  # (x, y, width, height )
     timetable_widget_2.setColumnCount(5)
@@ -391,11 +405,15 @@ def timetable_frame():
     set_timetable_cell_value(timetable_widget_2, 2)
 
     widgets["timetable_widget_2"].append(timetable_widget_2)
-    grid.addWidget(widgets["timetable_widget_2"][-1], 4, 0, 1, 3)
+    grid.addWidget(widgets["timetable_widget_2"][-1], 2, 1, 1, 3)
 
     back_to_menu = create_button("Menu")
     widgets["back_to_menu"].append(back_to_menu)
-    grid.addWidget(widgets["back_to_menu"][-1], 5, 0, 1, 1)
+    grid.addWidget(widgets["back_to_menu"][-1], 3, 0, 1, 1)
+
+    display_logo("small_logo")
+    grid.addWidget(widgets["logo"][-1], 3, 4, 1, 1)  # (row, column, row_span, column_span)
+
     back_to_menu.clicked.connect(lambda: back_to_menu_on_click())
 
 
@@ -460,6 +478,22 @@ def add_order_frame():
     widgets["back_to_menu"].append(back_to_menu)
     grid.addWidget(widgets["back_to_menu"][-1], 12, 0, 1, 1)
     back_to_menu.clicked.connect(lambda: back_to_menu_on_click())
+
+
+def check_order_content_frame():
+    set_content_margins(50, 50, 100, 100)
+
+    find_order_textbox = QLineEdit()
+    find_order_textbox.setStyleSheet("font-size: 30px; font-weight: bold; color: 'black'; background: 'white'")
+    find_order_textbox.setPlaceholderText("nr zamówienia")
+    widgets["find_order_textbox"].append(find_order_textbox)
+    grid.addWidget(widgets["find_order_textbox"][-1], 0, 0, 1, 1)
+
+    find_order_button = create_button("Znajdź zamówienie")
+    widgets["find_order_button"].append(find_order_button)
+    grid.addWidget(widgets["find_order_button"][-1], 0, 1, 1, 3)
+
+    # tabela here
 
 
 init_frame()
