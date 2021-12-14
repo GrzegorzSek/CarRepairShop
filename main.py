@@ -13,6 +13,7 @@ from PyQt5.QtGui import QCursor
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox
 
 widgets = {
     "logo": [],
@@ -51,6 +52,15 @@ window.setStyleSheet("background: 'black';")
 
 # grid layout
 grid = QGridLayout()
+
+
+def info_message():
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Information)
+    msg.setText("Wykonano pomyślnie")
+    msg.setWindowTitle("informacja")
+    msg.setStandardButtons(QMessageBox.Ok)
+    msg.exec_()
 
 
 def set_content_margins(left_margin, top_margin, right_margin, bottom_margin):
@@ -177,6 +187,7 @@ def add_order_to_database_on_click(s_1, s_2, s_3, s_4, s_5, s_6, s_7, s_8, combo
         db.execute_query(query)
 
     sort_services(order_id)
+    info_message()
 
 
 def save_to_database(position_orders, position_number):
