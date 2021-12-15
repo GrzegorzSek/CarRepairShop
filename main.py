@@ -220,7 +220,7 @@ def add_order_to_pos(day, position, pos_hours, orders):
     for order in orders:
         if order[1] <= pos_hours[0]:
             position[day].append(order[0])    # add order to specific day
-            orders.pop(counter)  # remove order from list of orders
+            orders.pop(counter)  # remove order from the list of orders
             order_time = pos_hours[0] - order[1]
             pos_hours = [order_time, False]
             return pos_hours
@@ -237,7 +237,7 @@ def run_algorithm_button_on_click():
     orders = db.db_data_to_list(query)
 
     # iteration over available 5 days
-    for i in range(0, 5):
+    for day in range(0, 5):
         pos_1_hours = [8, False]  # position, no_solution (True if no solution)
         pos_2_hours = [8, False]
 
@@ -248,7 +248,7 @@ def run_algorithm_button_on_click():
                     if rand_num % 2 != 0:
                         if pos_1_hours[1] is False:
                             # add order to position 1 on day {i}
-                            pos_1_hours = add_order_to_pos(i, position_1, pos_1_hours, orders)
+                            pos_1_hours = add_order_to_pos(day, position_1, pos_1_hours, orders)
                             if pos_1_hours[0] == 0:
                                 pos_1_hours = [0, True]
                         else:
@@ -256,14 +256,14 @@ def run_algorithm_button_on_click():
                     else:
                         if pos_2_hours[1] is False:
                             # add order to position 2 on day {i}
-                            pos_2_hours = add_order_to_pos(i, position_2, pos_2_hours, orders)
+                            pos_2_hours = add_order_to_pos(day, position_2, pos_2_hours, orders)
                             if pos_2_hours[0] == 0:
                                 pos_2_hours = [0, True]
                         else:
                             continue
                 elif pos_2_hours[1] is True:
                     if pos_1_hours[1] is False:
-                        pos_1_hours = add_order_to_pos(i, position_1, pos_1_hours, orders)
+                        pos_1_hours = add_order_to_pos(day, position_1, pos_1_hours, orders)
                         if pos_1_hours[0] == 0:
                             pos_1_hours = [0, True]
                         # add order to position 1 on day {i}
@@ -271,7 +271,7 @@ def run_algorithm_button_on_click():
                         continue
                 else:
                     if pos_2_hours[1] is False:
-                        pos_2_hours = add_order_to_pos(i, position_2, pos_2_hours, orders)
+                        pos_2_hours = add_order_to_pos(day, position_2, pos_2_hours, orders)
                         if pos_2_hours[0] == 0:
                             pos_2_hours = [0, True]
                         # add order to position 2 on day {i}
@@ -282,6 +282,7 @@ def run_algorithm_button_on_click():
 
     save_to_database(position_1, 1)
     save_to_database(position_2, 2)
+    info_message()
 
 
 def create_button(name):
@@ -317,14 +318,15 @@ def set_timetable_cell_value(widget_name, workplace_number):
         AND data_plan_wyk = '{day + 1}' ORDER BY nr_w_kolejce ASC"""
         result = db.db_data_to_list(sql_query)
 
-        for i in range(0, len(result)):
-            start = 0
+        start_row = 0
+        for i in range(0, len(result)):  # iterations through rows
             repeat_number = result[i][1]
+            last_row = repeat_number
             if i > 0:
-                start = start + repeat_number + 1
-                repeat_number = repeat_number + result[i][1] + 1
+                start_row = start_row + result[i-1][1]
+                last_row = start_row + repeat_number
 
-            for r in range(start, repeat_number):
+            for r in range(start_row, last_row):
                 widget_name.setItem(r, day, QTableWidgetItem(str(result[i][0])))
 
 
@@ -505,7 +507,7 @@ def check_order_content_frame():
     find_order_textbox.setStyleSheet("font-size: 30px; font-weight: bold; color: 'black'; background: 'white'")
     find_order_textbox.setPlaceholderText("nr zamówienia")
     widgets["find_order_textbox"].append(find_order_textbox)
-    grid.addWidget(widgets["find_order_textbox"][-1], 0, 0, 1, 1)
+    grid.addWidget(widgets["find_order_textbox"][-1], 0, 0, 1, 4)
 
     find_order_button = create_button("Znajdź zamówienie")
     widgets["find_order_button"].append(find_order_button)
