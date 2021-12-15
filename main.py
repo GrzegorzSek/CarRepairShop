@@ -46,7 +46,8 @@ widgets = {
     # check order frame
     "find_order_textbox": [],
     "find_order_button": [],
-    # "order_content_table": [],
+    "table_label": [],
+    "order_content_widget": [],
 }
 
 services_names = []
@@ -310,7 +311,7 @@ def create_checkbox(name):
     return checkbox
 
 
-def set_timetable_cell_value(name, workplace_number):
+def set_timetable_cell_value(widget_name, workplace_number):
     for day in range(0, 5):
         sql_query = f"""SELECT zamowienie_id, czas_razem FROM zamowienie WHERE nr_stanowiska = '{workplace_number}' 
         AND data_plan_wyk = '{day + 1}' ORDER BY nr_w_kolejce ASC"""
@@ -324,7 +325,24 @@ def set_timetable_cell_value(name, workplace_number):
                 repeat_number = repeat_number + result[i][1] + 1
 
             for r in range(start, repeat_number):
-                name.setItem(r, day, QTableWidgetItem(str(result[i][0])))
+                widget_name.setItem(r, day, QTableWidgetItem(str(result[i][0])))
+
+
+def find_order_button_on_click(label, textbox, table_name):
+    textbox_value = textbox.text()
+    label.setText(f"zawartość zamówienia nr: {textbox_value}")
+
+    sql_query = f"""SELECT nazwa
+                FROM usluga
+                JOIN zawartosc_zamowienia ON usluga.usluga_id = zawartosc_zamowienia.usluga_id
+                JOIN zamowienie ON zawartosc_zamowienia.zamowienie_id = zamowienie.zamowienie_id
+                WHERE zamowienie.zamowienie_id = '{textbox_value}';"""
+
+    rows = db.db_data_to_list(sql_query)
+    i = 0
+    for row in rows:
+        table_name.setItem(i, 0, QTableWidgetItem(row[0]))
+        i = i + 1
 
 
 def init_frame():
@@ -345,7 +363,7 @@ def menu_frame():
     set_content_margins(0, 0, 0, 100)
     display_logo("logo")
 
-    grid.addWidget(widgets["logo"][-1], 0, 0, 3, 3)  # (row, column, row_span, column_span)
+    grid.addWidget(widgets["logo"][-1], 0, 0, 3, 5)  # (row, column, row_span, column_span)
 
     add_order_button = create_button("Dodaj zamówienie")
     run_algorithm_button = create_button("Uruchom algorytm")
@@ -357,10 +375,10 @@ def menu_frame():
     widgets["show_timetable_button"].append(show_timetable_button)
     widgets["check_order_button"].append(check_order_button)
 
-    grid.addWidget(widgets["add_order_button"][-1], 3, 1, 2, 1)
-    grid.addWidget(widgets["run_algorithm_button"][-1], 5, 1, 2, 1)
-    grid.addWidget(widgets["show_timetable_button"][-1], 7, 1, 2, 1)
-    grid.addWidget(widgets["check_order_button"][-1], 9, 1, 2, 1)
+    grid.addWidget(widgets["add_order_button"][-1], 3, 2, 2, 1)
+    grid.addWidget(widgets["run_algorithm_button"][-1], 5, 2, 2, 1)
+    grid.addWidget(widgets["show_timetable_button"][-1], 7, 2, 2, 1)
+    grid.addWidget(widgets["check_order_button"][-1], 9, 2, 2, 1)
 
     show_timetable_button.clicked.connect(show_timetable_button_on_click)
     add_order_button.clicked.connect(add_order_button_button_on_click)
@@ -414,7 +432,7 @@ def timetable_frame():
     display_logo("small_logo")
     grid.addWidget(widgets["logo"][-1], 3, 4, 1, 1)  # (row, column, row_span, column_span)
 
-    back_to_menu.clicked.connect(lambda: back_to_menu_on_click())
+    back_to_menu.clicked.connect(back_to_menu_on_click)
 
 
 def add_order_frame():
@@ -437,14 +455,14 @@ def add_order_frame():
     grid.addWidget(widgets["registration_number_combo"][-1], 1, 1, 1, 1)
     # print(str(registration_number_combo.currentText()))
 
-    service_1 = create_checkbox("usluga_1")
-    service_2 = create_checkbox("usluga_2")
-    service_3 = create_checkbox("usluga_3")
-    service_4 = create_checkbox("usluga_4")
-    service_5 = create_checkbox("usluga_5")
-    service_6 = create_checkbox("usluga_6")
-    service_7 = create_checkbox("usluga_7")
-    service_8 = create_checkbox("usluga_8")
+    service_1 = create_checkbox("zmiana lakieru")
+    service_2 = create_checkbox("montaż spoilera")
+    service_3 = create_checkbox("modyfikacja podłoża i zderzaków")
+    service_4 = create_checkbox("montaż wysokoenergetycznych świec zapłonowych")
+    service_5 = create_checkbox("wymiana tłoków silnika")
+    service_6 = create_checkbox("zmiana felg")
+    service_7 = create_checkbox("zastosowanie sportowego wałka rozrządu")
+    service_8 = create_checkbox("Wymiana skrzyni biegów i wzmocnienie sprzęgła")
 
     widgets["service_1"].append(service_1)
     widgets["service_2"].append(service_2)
@@ -477,11 +495,11 @@ def add_order_frame():
     back_to_menu = create_button("Menu")
     widgets["back_to_menu"].append(back_to_menu)
     grid.addWidget(widgets["back_to_menu"][-1], 12, 0, 1, 1)
-    back_to_menu.clicked.connect(lambda: back_to_menu_on_click())
+    back_to_menu.clicked.connect(back_to_menu_on_click)
 
 
 def check_order_content_frame():
-    set_content_margins(50, 50, 100, 100)
+    set_content_margins(50, 50, 50, 50)
 
     find_order_textbox = QLineEdit()
     find_order_textbox.setStyleSheet("font-size: 30px; font-weight: bold; color: 'black'; background: 'white'")
@@ -491,9 +509,33 @@ def check_order_content_frame():
 
     find_order_button = create_button("Znajdź zamówienie")
     widgets["find_order_button"].append(find_order_button)
-    grid.addWidget(widgets["find_order_button"][-1], 0, 1, 1, 3)
+    grid.addWidget(widgets["find_order_button"][-1], 0, 4, 1, 1)
 
-    # tabela here
+    # table
+    table_label = QLabel()
+    widgets["table_label"].append(table_label)
+    table_label.setStyleSheet("font-size: 40px; font-weight: bold; color: 'white';")
+    grid.addWidget(widgets["table_label"][-1], 1, 0, 1, 1)
+
+    order_content_widget = QtWidgets.QTableWidget()
+    order_content_widget.setStyleSheet("color: 'black'; background: 'white';")
+
+    order_content_widget.setColumnCount(1)
+    order_content_widget.setRowCount(8)
+    order_content_widget.setHorizontalHeaderLabels(["Usługa"])
+
+    widgets["order_content_widget"].append(order_content_widget)
+    grid.addWidget(widgets["order_content_widget"][-1], 2, 0, 5, 1)
+
+    # back to menu button
+    back_to_menu = create_button("Menu")
+    widgets["back_to_menu"].append(back_to_menu)
+    grid.addWidget(widgets["back_to_menu"][-1], 9, 0, 1, 1)
+
+    back_to_menu.clicked.connect(back_to_menu_on_click)
+    find_order_button.clicked.connect(
+        lambda: find_order_button_on_click(table_label, find_order_textbox, order_content_widget)
+    )
 
 
 init_frame()
