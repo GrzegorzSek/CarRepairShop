@@ -24,6 +24,7 @@ widgets = {
     "run_algorithm_button": [],
     "show_timetable_button": [],
     "check_order_button": [],
+    "run_algorithm_x_times": [],
     # schedule frame
     "timetable_widget_1": [],
     "position_1_label": [],
@@ -229,56 +230,69 @@ def add_order_to_pos(day, position, pos_hours, orders):
     return pos_hours
 
 
-def run_algorithm_button_on_click():
-    position_1 = [[1], [2], [3], [4], [5]]
-    position_2 = [[1], [2], [3], [4], [5]]
+def run_algorithm_button_on_click(run_x_times_textbox_value):
+    run_x_times = int(run_x_times_textbox_value.text())
+    position_1 = [[]]
+    position_2 = [[]]
+    solution = 8  # amount of left free hours
 
-    query = "SELECT zamowienie_id, czas_razem FROM zamowienie ORDER BY data_mod ASC"
-    orders = db.db_data_to_list(query)
+    for i in range(0, int(run_x_times)):
+        new_position_1 = [[1], [2], [3], [4], [5]]
+        new_position_2 = [[1], [2], [3], [4], [5]]
+        new_solution = 0
 
-    # iteration over available 5 days
-    for day in range(0, 5):
-        pos_1_hours = [8, False]  # position, no_solution (True if no solution)
-        pos_2_hours = [8, False]
+        query = "SELECT zamowienie_id, czas_razem FROM zamowienie ORDER BY data_mod ASC"
+        orders = db.db_data_to_list(query)
 
-        while pos_1_hours[1] is False or pos_2_hours[1] is False:  # tu zmienić warunek
-            if orders:
-                if pos_1_hours[1] is False and pos_2_hours[1] is False:
-                    rand_num = random.randint(0, 9)
-                    if rand_num % 2 != 0:
+        # iteration over available 5 days
+        for day in range(0, 5):
+            pos_1_hours = [8, False]  # position, no_solution (True if no solution)
+            pos_2_hours = [8, False]
+
+            while pos_1_hours[1] is False or pos_2_hours[1] is False:  # tu zmienić warunek
+                if orders:
+                    if pos_1_hours[1] is False and pos_2_hours[1] is False:
+                        rand_num = random.randint(0, 9)
+                        if rand_num % 2 != 0:
+                            if pos_1_hours[1] is False:
+                                # add order to position 1 on day {i}
+                                pos_1_hours = add_order_to_pos(day, new_position_1, pos_1_hours, orders)
+                                if pos_1_hours[0] == 0:
+                                    pos_1_hours = [0, True]
+                            else:
+                                continue
+                        else:
+                            if pos_2_hours[1] is False:
+                                # add order to position 2 on day {i}
+                                pos_2_hours = add_order_to_pos(day, new_position_2, pos_2_hours, orders)
+                                if pos_2_hours[0] == 0:
+                                    pos_2_hours = [0, True]
+                            else:
+                                continue
+                    elif pos_2_hours[1] is True:
                         if pos_1_hours[1] is False:
-                            # add order to position 1 on day {i}
-                            pos_1_hours = add_order_to_pos(day, position_1, pos_1_hours, orders)
+                            pos_1_hours = add_order_to_pos(day, new_position_1, pos_1_hours, orders)
                             if pos_1_hours[0] == 0:
                                 pos_1_hours = [0, True]
+                            # add order to position 1 on day {i}
                         else:
                             continue
                     else:
                         if pos_2_hours[1] is False:
-                            # add order to position 2 on day {i}
-                            pos_2_hours = add_order_to_pos(day, position_2, pos_2_hours, orders)
+                            pos_2_hours = add_order_to_pos(day, new_position_2, pos_2_hours, orders)
                             if pos_2_hours[0] == 0:
                                 pos_2_hours = [0, True]
+                            # add order to position 2 on day {i}
                         else:
                             continue
-                elif pos_2_hours[1] is True:
-                    if pos_1_hours[1] is False:
-                        pos_1_hours = add_order_to_pos(day, position_1, pos_1_hours, orders)
-                        if pos_1_hours[0] == 0:
-                            pos_1_hours = [0, True]
-                        # add order to position 1 on day {i}
-                    else:
-                        continue
                 else:
-                    if pos_2_hours[1] is False:
-                        pos_2_hours = add_order_to_pos(day, position_2, pos_2_hours, orders)
-                        if pos_2_hours[0] == 0:
-                            pos_2_hours = [0, True]
-                        # add order to position 2 on day {i}
-                    else:
-                        continue
-            else:
-                break
+                    break
+            new_solution = new_solution + pos_1_hours[0] + pos_2_hours[0]
+        print(new_solution)
+        if new_solution < solution:
+            solution = new_solution
+            position_1 = new_position_1
+            position_2 = new_position_2
 
     save_to_database(position_1, 1)
     save_to_database(position_2, 2)
@@ -362,9 +376,9 @@ def init_frame():
 
 
 def menu_frame():
-    set_content_margins(0, 0, 0, 100)
-    display_logo("logo")
+    set_content_margins(0, 0, 0, 25)
 
+    display_logo("logo")
     grid.addWidget(widgets["logo"][-1], 0, 0, 3, 5)  # (row, column, row_span, column_span)
 
     add_order_button = create_button("Dodaj zamówienie")
@@ -382,9 +396,21 @@ def menu_frame():
     grid.addWidget(widgets["show_timetable_button"][-1], 7, 2, 2, 1)
     grid.addWidget(widgets["check_order_button"][-1], 9, 2, 2, 1)
 
+    # textbox
+    run_algorithm_x_times = QLineEdit()
+    run_algorithm_x_times.setStyleSheet("font-size: 20px; font-weight: bold; color: 'black'; background: 'white'")
+    run_algorithm_x_times.setPlaceholderText("Ile razy uruchomić algorytm?")
+    widgets["run_algorithm_x_times"].append(run_algorithm_x_times)
+    grid.addWidget(widgets["run_algorithm_x_times"][-1], 11, 2, 1, 1)
+
+    run_algorithm_x_times.setFixedWidth(400)
+    # size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+    # run_algorithm_x_times.setSizePolicy(size_policy)
+
+    # buttons functions
     show_timetable_button.clicked.connect(show_timetable_button_on_click)
     add_order_button.clicked.connect(add_order_button_button_on_click)
-    run_algorithm_button.clicked.connect(run_algorithm_button_on_click)
+    run_algorithm_button.clicked.connect(lambda: run_algorithm_button_on_click(run_algorithm_x_times))
     check_order_button.clicked.connect(check_order_button_on_click)
 
 
@@ -409,6 +435,9 @@ def timetable_frame():
     widgets["timetable_widget_1"].append(timetable_widget_1)
     grid.addWidget(widgets["timetable_widget_1"][-1], 1, 1, 1, 3)
 
+    timetable_widget_1.setFixedWidth(520)
+    timetable_widget_1.setFixedHeight(270)
+
     position_2_label = QLabel()
     position_2_label.setText("Stanowisko 2")
     widgets["position_2_label"].append(position_2_label)
@@ -427,9 +456,15 @@ def timetable_frame():
     widgets["timetable_widget_2"].append(timetable_widget_2)
     grid.addWidget(widgets["timetable_widget_2"][-1], 2, 1, 1, 3)
 
+    timetable_widget_2.setFixedWidth(520)
+    timetable_widget_2.setFixedHeight(270)
+
     back_to_menu = create_button("Menu")
     widgets["back_to_menu"].append(back_to_menu)
     grid.addWidget(widgets["back_to_menu"][-1], 3, 0, 1, 1)
+
+    back_to_menu.setFixedWidth(120)
+    back_to_menu.setFixedHeight(90)
 
     display_logo("small_logo")
     grid.addWidget(widgets["logo"][-1], 3, 4, 1, 1)  # (row, column, row_span, column_span)
@@ -497,6 +532,10 @@ def add_order_frame():
     back_to_menu = create_button("Menu")
     widgets["back_to_menu"].append(back_to_menu)
     grid.addWidget(widgets["back_to_menu"][-1], 12, 0, 1, 1)
+
+    back_to_menu.setFixedWidth(120)
+    back_to_menu.setFixedHeight(90)
+
     back_to_menu.clicked.connect(back_to_menu_on_click)
 
 
@@ -509,6 +548,10 @@ def check_order_content_frame():
     widgets["find_order_textbox"].append(find_order_textbox)
     grid.addWidget(widgets["find_order_textbox"][-1], 0, 0, 1, 4)
 
+    size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+    find_order_textbox.setSizePolicy(size_policy)
+
+    # button
     find_order_button = create_button("Znajdź zamówienie")
     widgets["find_order_button"].append(find_order_button)
     grid.addWidget(widgets["find_order_button"][-1], 0, 4, 1, 1)
@@ -529,10 +572,19 @@ def check_order_content_frame():
     widgets["order_content_widget"].append(order_content_widget)
     grid.addWidget(widgets["order_content_widget"][-1], 2, 0, 5, 1)
 
+    order_content_widget.setFixedWidth(300)
+    order_content_widget.setFixedHeight(270)
+
     # back to menu button
     back_to_menu = create_button("Menu")
     widgets["back_to_menu"].append(back_to_menu)
     grid.addWidget(widgets["back_to_menu"][-1], 9, 0, 1, 1)
+
+    back_to_menu.setFixedWidth(120)
+    back_to_menu.setFixedHeight(95)
+
+    display_logo("small_logo")
+    grid.addWidget(widgets["logo"][-1], 9, 4, 1, 1)  # (row, column, row_span, column_span)
 
     back_to_menu.clicked.connect(back_to_menu_on_click)
     find_order_button.clicked.connect(
