@@ -1,0 +1,148 @@
+Stanowisko: 2
+
+***************************
+^^^^^ Nr zamowienia: 5 ^^^^^
+Imie i nazwisko klienta: Paulina Java
+data_rozpoczecia: jan 13 2022 12:00:00
+--------------------------
+uslugi: 
+Zmiana lakieru
+Montowanie spoilera
+Modyfikowanie pod³o¿a i zderzaków
+--------------------------
+data_zakonczenia: jan 13 2022 15:00:00
+***************************
+
+
+***************************
+^^^^^ Nr zamowienia: 2 ^^^^^
+Imie i nazwisko klienta: Grzegorz Sek
+data_rozpoczecia: jan 13 2022 8:00:00
+--------------------------
+uslugi: 
+Zmiana lakieru
+Zmiana felg
+Zastosowanie sportowego wa³ka rozrz¹dów
+Wymiana skrzyni biegów i wzmocnienie sprzêg³a
+--------------------------
+data_zakonczenia: jan 13 2022 12:00:00
+***************************
+
+
+***************************
+^^^^^ Nr zamowienia: 11 ^^^^^
+Imie i nazwisko klienta: Hubert Ozga
+data_rozpoczecia: jan 14 2022 14:00:00
+--------------------------
+uslugi: 
+Zmiana lakieru
+Montowanie spoilera
+--------------------------
+data_zakonczenia: jan 14 2022 16:00:00
+***************************
+
+
+***************************
+^^^^^ Nr zamowienia: 4 ^^^^^
+Imie i nazwisko klienta: Jan Kowalski
+data_rozpoczecia: jan 14 2022 8:00:00
+--------------------------
+uslugi: 
+Zmiana lakieru
+Montowanie spoilera
+Modyfikowanie pod³o¿a i zderzaków
+Wymiana t³oków silnika
+Zmiana felg
+Zastosowanie sportowego wa³ka rozrz¹dów
+--------------------------
+data_zakonczenia: jan 14 2022 14:00:00
+***************************
+
+
+***************************
+^^^^^ Nr zamowienia: 10 ^^^^^
+Imie i nazwisko klienta: Hubert Ozga
+data_rozpoczecia: jan 15 2022 11:00:00
+--------------------------
+uslugi: 
+Zmiana lakieru
+Montowanie spoilera
+Modyfikowanie pod³o¿a i zderzaków
+--------------------------
+data_zakonczenia: jan 15 2022 14:00:00
+***************************
+
+
+***************************
+^^^^^ Nr zamowienia: 8 ^^^^^
+Imie i nazwisko klienta: Hubert Ozga
+data_rozpoczecia: jan 15 2022 8:00:00
+--------------------------
+uslugi: 
+Zmiana lakieru
+Montowanie spoilera
+Modyfikowanie pod³o¿a i zderzaków
+--------------------------
+data_zakonczenia: jan 15 2022 11:00:00
+***************************
+
+
+***************************
+^^^^^ Nr zamowienia: 14 ^^^^^
+Imie i nazwisko klienta: Hubert Ozga
+data_rozpoczecia: jan 16 2022 13:00:00
+--------------------------
+uslugi: 
+Zmiana lakieru
+Monta¿ wysokoenergetycznych œwiec zap³onowych
+Wymiana t³oków silnika
+--------------------------
+data_zakonczenia: jan 16 2022 16:00:00
+***************************
+
+
+***************************
+^^^^^ Nr zamowienia: 13 ^^^^^
+Imie i nazwisko klienta: Hubert Ozga
+data_rozpoczecia: jan 16 2022 8:00:00
+--------------------------
+uslugi: 
+Zmiana lakieru
+Montowanie spoilera
+Modyfikowanie pod³o¿a i zderzaków
+Monta¿ wysokoenergetycznych œwiec zap³onowych
+Wymiana t³oków silnika
+--------------------------
+data_zakonczenia: jan 16 2022 13:00:00
+***************************
+
+
+***************************
+^^^^^ Nr zamowienia: 19 ^^^^^
+Imie i nazwisko klienta: Patrycja Python
+data_rozpoczecia: jan 17 2022 11:00:00
+--------------------------
+uslugi: 
+Zmiana lakieru
+Montowanie spoilera
+Modyfikowanie pod³o¿a i zderzaków
+Wymiana skrzyni biegów i wzmocnienie sprzêg³a
+--------------------------
+data_zakonczenia: jan 17 2022 15:00:00
+***************************
+
+
+***************************
+^^^^^ Nr zamowienia: 18 ^^^^^
+Imie i nazwisko klienta: Hubert Ozga
+data_rozpoczecia: jan 17 2022 8:00:00
+--------------------------
+uslugi: 
+Zmiana lakieru
+Zastosowanie sportowego wa³ka rozrz¹dów
+Wymiana skrzyni biegów i wzmocnienie sprzêg³a
+--------------------------
+data_zakonczenia: jan 17 2022 11:00:00
+***************************
+
+

@@ -1,0 +1,106 @@
+Stanowisko:2
+***************************
+Nr zamowienia:3
+--------------------------
+Imiê i nazwisko klienta:Paulina Java
+--------------------------
+data_rozpoczeciajan 1 2022 8:00:00
+--------------------------
+Modyfikowanie pod³o¿a i zderzaków
+Wymiana t³oków silnika
+Zmiana felg
+Zastosowanie sportowego wa³ka rozrz¹dów
+--------------------------
+data_zakonczeniajan 1 2022 12:00:00
+Nr zamowienia:4
+--------------------------
+Imiê i nazwisko klienta:Jan Kowalski
+--------------------------
+data_rozpoczeciajan 2 2022 8:00:00
+--------------------------
+Zmiana lakieru
+Montowanie spoilera
+Modyfikowanie pod³o¿a i zderzaków
+Wymiana t³oków silnika
+Zmiana felg
+Zastosowanie sportowego wa³ka rozrz¹dów
+--------------------------
+data_zakonczeniajan 2 2022 14:00:00
+Nr zamowienia:5
+--------------------------
+Imiê i nazwisko klienta:Paulina Java
+--------------------------
+data_rozpoczeciajan 1 2022 12:00:00
+--------------------------
+Zmiana lakieru
+Montowanie spoilera
+Modyfikowanie pod³o¿a i zderzaków
+--------------------------
+data_zakonczeniajan 1 2022 15:00:00
+Nr zamowienia:8
+--------------------------
+Imiê i nazwisko klienta:Hubert Ozga
+--------------------------
+data_rozpoczeciajan 3 2022 8:00:00
+--------------------------
+Zmiana lakieru
+Montowanie spoilera
+Modyfikowanie pod³o¿a i zderzaków
+--------------------------
+data_zakonczeniajan 3 2022 11:00:00
+Nr zamowienia:10
+--------------------------
+Imiê i nazwisko klienta:Hubert Ozga
+--------------------------
+data_rozpoczeciajan 3 2022 11:00:00
+--------------------------
+Zmiana lakieru
+Montowanie spoilera
+Modyfikowanie pod³o¿a i zderzaków
+--------------------------
+data_zakonczeniajan 3 2022 14:00:00
+Nr zamowienia:12
+--------------------------
+Imiê i nazwisko klienta:Hubert Ozga
+--------------------------
+data_rozpoczeciajan 1 2022 15:00:00
+--------------------------
+Zmiana lakieru
+--------------------------
+data_zakonczeniajan 1 2022 16:00:00
+Nr zamowienia:14
+--------------------------
+Imiê i nazwisko klienta:Hubert Ozga
+--------------------------
+data_rozpoczeciajan 4 2022 8:00:00
+--------------------------
+Zmiana lakieru
+Monta¿ wysokoenergetycznych œwiec zap³onowych
+Wymiana t³oków silnika
+--------------------------
+data_zakonczeniajan 4 2022 11:00:00
+Nr zamowienia:15
+--------------------------
+Imiê i nazwisko klienta:Hubert Ozga
+--------------------------
+data_rozpoczeciajan 4 2022 11:00:00
+--------------------------
+Zmiana lakieru
+Wymiana t³oków silnika
+Zastosowanie sportowego wa³ka rozrz¹dów
+--------------------------
+data_zakonczeniajan 4 2022 14:00:00
+Nr zamowienia:17
+--------------------------
+Imiê i nazwisko klienta:Hubert Ozga
+--------------------------
+data_rozpoczeciajan 5 2022 8:00:00
+--------------------------
+Zmiana lakieru
+Modyfikowanie pod³o¿a i zderzaków
+Monta¿ wysokoenergetycznych œwiec zap³onowych
+Zmiana felg
+Zastosowanie sportowego wa³ka rozrz¹dów
+Wymiana skrzyni biegów i wzmocnienie sprzêg³a
+--------------------------
+data_zakonczeniajan 5 2022 14:00:00

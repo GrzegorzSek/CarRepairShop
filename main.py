@@ -6,7 +6,7 @@ import random
 from database import *
 import sys
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QCheckBox
-from PyQt5.QtWidgets import QComboBox, QLineEdit
+from PyQt5.QtWidgets import QComboBox, QLineEdit, QPlainTextEdit
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QCursor
@@ -14,6 +14,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtWidgets import QMessageBox
+# from fpdf import FPDF
 
 widgets = {
     # init frame
@@ -30,6 +31,7 @@ widgets = {
     "position_1_label": [],
     "position_2_label": [],
     "timetable_widget_2": [],
+    "show_details_button": [],
     # add order frame
     "add_order_label": [],
     "registration_number_combo": [],
@@ -49,6 +51,9 @@ widgets = {
     "find_order_button": [],
     "table_label": [],
     "order_content_widget": [],
+    # show details frame
+    "position_1_qplane": [],
+    "position_2_qplane": [],
 }
 
 services_names = []
@@ -57,7 +62,9 @@ services_names = []
 app = QApplication(sys.argv)
 window = QWidget()
 window.setWindowTitle("Pimp My Ride")
-window.setFixedWidth(1200)
+# window.setFixedWidth(1200)
+window.setFixedWidth(1500)
+# window.setFixedHeight(900)
 window.setFixedHeight(900)
 window.setStyleSheet("background: 'black';")
 
@@ -105,6 +112,11 @@ def next_on_click():
 def back_to_menu_on_click():
     clear_widgets()
     menu_frame()
+
+
+def show_details_on_click():
+    clear_widgets()
+    show_details_frame()
 
 
 def show_timetable_button_on_click():
@@ -289,6 +301,8 @@ def run_algorithm_button_on_click(run_x_times_textbox_value):
                     break
             new_solution = new_solution + pos_1_hours[0] + pos_2_hours[0]
         print(new_solution)
+        position_1 = new_position_1
+        position_2 = new_position_2
         if new_solution < solution:
             solution = new_solution
             position_1 = new_position_1
@@ -296,7 +310,107 @@ def run_algorithm_button_on_click(run_x_times_textbox_value):
 
     save_to_database(position_1, 1)
     save_to_database(position_2, 2)
+    set_dates(1)
+    set_dates(2)
+    data_to_file(1)
+    data_to_file(2)
+    # print_to_pdf("stanowisko", 1)
+    # print_to_pdf("stanowisko", 2)
     info_message()
+
+
+def set_dates(position):
+    month = 'jan'
+    year = '2022'
+    time = ':00:00'
+    day = 13
+
+    for i in range(1, 6):
+        query = f"""SELECT zamowienie_id, czas_razem FROM zamowienie WHERE nr_stanowiska = '{position}'
+        AND data_plan_wyk = '{i}' ORDER BY nr_w_kolejce ASC"""  # get orders data
+        orders = db.db_data_to_list(query)
+        counter = 0
+        hours_to_add = 8
+        data = month + " " + str(day) + " " + year + " " + str(hours_to_add) + time
+
+        for order in orders:
+            if counter == 0:
+                data_2 = month + " " + str(day) + " " + year + " " + str(hours_to_add + order[1]) + time
+                sql_query = f"""UPDATE zamowienie SET data_rozp = '{data}', data_zak = '{data_2}'
+                WHERE zamowienie_id = '{order[0]}'"""
+                db.execute_query(sql_query)
+
+                hours_to_add = hours_to_add + order[1]
+                counter = 1
+            else:
+                data = month + " " + str(day) + " " + year + " " + str(hours_to_add) + time
+                data_2 = month + " " + str(day) + " " + year + " " + str(hours_to_add + order[1]) + time
+                sql_query = f"""UPDATE zamowienie SET data_rozp = '{data}', data_zak = '{data_2}'
+                WHERE zamowienie_id = '{order[0]}'"""
+                db.execute_query(sql_query)
+
+                hours_to_add = hours_to_add + order[1]
+        day = day + 1
+
+
+def data_to_file(position):
+    text_file = open("C:/Users/grzes/PycharmProjects/CarRepairShop/stanowisko" + str(position) + ".txt", "w")
+    query = f"""SELECT imie, nazwisko, model.nazwa AS 'model',
+            marka.nazwa AS 'marka', samochod.nr_rejestracyjny, zamowienie.data_rozp,
+            zamowienie.data_zak, zamowienie.zamowienie_id
+            FROM klient
+            JOIN samochod ON klient.samochod_id = samochod.samochod_id
+            JOIN model ON samochod.model_id = model.model_id
+            JOIN marka ON model.marka_id = marka.marka_id
+            JOIN zamowienie ON samochod.samochod_id = zamowienie.samochod_id
+            WHERE zamowienie.nr_stanowiska = '{position}' ORDER BY zamowienie.data_rozp ASC"""  # get orders data
+    orders = db.db_data_to_list(query)
+    text_file.write('Stanowisko: ' + str(position) + '\n\n')
+
+    for order in orders:
+        text_file.write('***************************\n')
+        text_file.write('^^^^^ Nr zamowienia: ' + str(order[7]) + ' ^^^^^\n')
+        # text_file.write('--------------------------\n')
+        text_file.write('Imie i nazwisko klienta: ' + str(order[0]) + " " + str(order[1]) + '\n')
+        # text_file.write('--------------------------\n')
+        text_file.write('data_rozpoczecia: ' + str(order[5]) + '\n')
+        text_file.write('--------------------------\n')
+        text_file.write('uslugi: \n')
+        query = f"""SELECT nazwa
+                    FROM usluga
+                    JOIN zawartosc_zamowienia ON usluga.usluga_id = zawartosc_zamowienia.usluga_id
+                    JOIN zamowienie ON zawartosc_zamowienia.zamowienie_id = zamowienie.zamowienie_id
+                    WHERE zamowienie.zamowienie_id = '{order[7]}';"""
+        services = db.db_data_to_list(query)
+        for service in services:
+            text_file.write(str(service[0]) + '\n')
+
+        text_file.write('--------------------------\n')
+        text_file.write('data_zakonczenia: ' + str(order[6]) + '\n')
+        text_file.write('***************************\n\n\n')
+
+    text_file.close()
+
+
+# def print_to_pdf(name, position):
+#     pdf = FPDF()
+#
+#     # Add a page
+#     pdf.add_page()
+#
+#     # set style and size of font
+#     # that you want in the pdf
+#     pdf.set_font("Arial", size=15)
+#
+#     # open the text file in read mode
+#     f = open(name + str(position) + ".txt", "r")
+#
+#     # insert the texts in pdf
+#     for x in f:
+#         pdf.cell(200, 10, txt=x, ln=1, align='C')
+#
+#     # save the pdf with name .pdf
+#     pdf.output(name + str(position) + ".pdf")
 
 
 def create_button(name):
@@ -414,8 +528,48 @@ def menu_frame():
     check_order_button.clicked.connect(check_order_button_on_click)
 
 
+def show_details_frame():
+    set_content_margins(50, 5, 50, 0)
+
+    # position 1
+    position_1_qplane = QPlainTextEdit()
+    position_1_qplane.setStyleSheet("color: 'black'; background: 'white';")
+    widgets["position_1_qplane"].append(position_1_qplane)
+    grid.addWidget(widgets["position_1_qplane"][-1], 0, 1, 1, 1)
+
+    # position 2
+    position_2_qplane = QPlainTextEdit()
+    position_2_qplane.setStyleSheet("color: 'black'; background: 'white';")
+    widgets["position_2_qplane"].append(position_2_qplane)
+    grid.addWidget(widgets["position_2_qplane"][-1], 0, 3, 1, 1)
+
+    # button back to menu
+    back_to_menu = create_button("Menu")
+    widgets["back_to_menu"].append(back_to_menu)
+    grid.addWidget(widgets["back_to_menu"][-1], 3, 0, 1, 1)
+
+    back_to_menu.setFixedWidth(120)
+    back_to_menu.setFixedHeight(90)
+
+    back_to_menu.clicked.connect(back_to_menu_on_click)
+
+    # logo
+    display_logo("small_logo")
+    grid.addWidget(widgets["logo"][-1], 3, 4, 1, 1)  # (row, column, row_span, column_span)
+
+    # display data from files
+    file_1 = open('stanowisko1.txt', 'r')
+    contents_1 = file_1.read()
+
+    file_2 = open('stanowisko2.txt', 'r')
+    contents_2 = file_2.read()
+
+    position_1_qplane.insertPlainText(contents_1)
+    position_2_qplane.insertPlainText(contents_2)
+
+
 def timetable_frame():
-    set_content_margins(50, 25, 50, 10)
+    set_content_margins(50, 5, 50, 0)
 
     position_1_label = QLabel()
     position_1_label.setText("Stanowisko 1")
@@ -435,8 +589,10 @@ def timetable_frame():
     widgets["timetable_widget_1"].append(timetable_widget_1)
     grid.addWidget(widgets["timetable_widget_1"][-1], 1, 1, 1, 3)
 
-    timetable_widget_1.setFixedWidth(520)
-    timetable_widget_1.setFixedHeight(270)
+    # timetable_widget_1.setFixedWidth(520)     # screen 24''
+    # timetable_widget_1.setFixedHeight(270)
+    timetable_widget_1.setFixedWidth(650)
+    timetable_widget_1.setFixedHeight(330)
 
     position_2_label = QLabel()
     position_2_label.setText("Stanowisko 2")
@@ -456,8 +612,10 @@ def timetable_frame():
     widgets["timetable_widget_2"].append(timetable_widget_2)
     grid.addWidget(widgets["timetable_widget_2"][-1], 2, 1, 1, 3)
 
-    timetable_widget_2.setFixedWidth(520)
-    timetable_widget_2.setFixedHeight(270)
+    # timetable_widget_2.setFixedWidth(520)     # screen 24''
+    # timetable_widget_2.setFixedHeight(270)
+    timetable_widget_2.setFixedWidth(650)
+    timetable_widget_2.setFixedHeight(330)
 
     back_to_menu = create_button("Menu")
     widgets["back_to_menu"].append(back_to_menu)
@@ -466,10 +624,15 @@ def timetable_frame():
     back_to_menu.setFixedWidth(120)
     back_to_menu.setFixedHeight(90)
 
-    display_logo("small_logo")
-    grid.addWidget(widgets["logo"][-1], 3, 4, 1, 1)  # (row, column, row_span, column_span)
+    show_details_button = create_button("szczegóły")
+    widgets["show_details_button"].append(show_details_button)
+    grid.addWidget(widgets["show_details_button"][-1], 3, 4, 1, 1)
+
+    # display_logo("small_logo")
+    # grid.addWidget(widgets["logo"][-1], 3, 4, 1, 1)  # (row, column, row_span, column_span)
 
     back_to_menu.clicked.connect(back_to_menu_on_click)
+    show_details_button.clicked.connect(show_details_on_click)
 
 
 def add_order_frame():
@@ -572,8 +735,10 @@ def check_order_content_frame():
     widgets["order_content_widget"].append(order_content_widget)
     grid.addWidget(widgets["order_content_widget"][-1], 2, 0, 5, 1)
 
-    order_content_widget.setFixedWidth(300)
-    order_content_widget.setFixedHeight(270)
+    # order_content_widget.setFixedWidth(300)   # screen 24''
+    # order_content_widget.setFixedHeight(270)
+    order_content_widget.setFixedWidth(350)
+    order_content_widget.setFixedHeight(400)
 
     # back to menu button
     back_to_menu = create_button("Menu")
