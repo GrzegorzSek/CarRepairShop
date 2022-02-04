@@ -261,7 +261,7 @@ def run_algorithm_button_on_click(run_x_times_textbox_value):
             pos_1_hours = [8, False]  # position, no_solution (True if no solution)
             pos_2_hours = [8, False]
 
-            while pos_1_hours[1] is False or pos_2_hours[1] is False:  # tu zmienić warunek
+            while pos_1_hours[1] is False or pos_2_hours[1] is False:  #
                 if orders:
                     if pos_1_hours[1] is False and pos_2_hours[1] is False:
                         rand_num = random.randint(0, 9)
